@@ -1,0 +1,9 @@
+<html>
+    <body>
+        <div id="content"></div>
+        <script>
+            var bg = chrome.extension.getBackgroundPage();
+            document.querySelector('#content').innerHTML = bg.content;
+        </script>
+    </body>
+</html>
