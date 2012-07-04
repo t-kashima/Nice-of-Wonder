@@ -1,0 +1,14 @@
+<html>
+    <script>
+    var content = {};
+    chrome.extension.onConnect.addListener(function(port) {
+        port.onMessage.addListener(function(msg) {
+            if (msg.status === 'start') {
+                content['selected'] = msg.selectedString;
+                content['url'] = msg.url;
+                content['title'] = msg.title;
+            }
+        });
+    });
+    </script>
+</html>
