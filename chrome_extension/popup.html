@@ -49,10 +49,11 @@
         <h1></h1>
         <p id="title"></p>
         <p><img id="favicon" alt="favicon"><a target="_blank"></a></p>
-        <textarea></textarea><br>
+        <textarea id="comment"></textarea><br>
         <div id="add"><button>追加</button></div>
         <script>
             const MAX_URL = 50;
+            const SERVICE_URL = 'http://localhost:4567/add';
             function shortUrl(url) {
                 if (url.length > MAX_URL) {
                     return url.substr(0, MAX_URL) + '...';
@@ -60,11 +61,30 @@
                 return url;
             }
             var bg = chrome.extension.getBackgroundPage();
-            document.querySelector('h1').innerHTML = bg.content.selected;
-            document.querySelector('#favicon').src = 'http://favicon.qfor.info/f/' + bg.content.url;
-            document.querySelector('a').href = bg.content.url;
-            document.querySelector('a').innerHTML = shortUrl(bg.content.url);
-            document.querySelector('#title').innerHTML = bg.content.title;
+            var quote = bg.content.selected;
+            var url = bg.content.url;
+            var title = bg.content.title;
+            document.querySelector('h1').innerHTML = quote;
+            document.querySelector('#favicon').src = 'http://favicon.qfor.info/f/' + url;
+            document.querySelector('a').href = url;
+            document.querySelector('a').innerHTML = shortUrl(url);
+            document.querySelector('#title').innerHTML = title;
+
+            var addBtn = document.querySelector('#add');
+            addBtn.addEventListener('click', function(event) {
+                var comment = document.querySelector('#comment').value;
+                var req = new XMLHttpRequest();
+                var params = 'title=' + title + '&quote=' + quote + '&url=' +
+                    url + '&comment=' + comment;
+                req.open('GET', SERVICE_URL + '?' + params, true);
+                req.onload = showData;
+                req.send(null);
+
+                function showData() {
+                    console.log(req.responseText);
+                    window.close();
+                }
+            });
         </script>
     </body>
 </html>
